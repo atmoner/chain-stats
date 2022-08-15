@@ -32,7 +32,7 @@
       <v-list>
         <v-list-item
           v-for="[icon, text, url] in links"
-          :key="icon"
+          :key="text"
           link
           :to="url"
         >
@@ -74,6 +74,7 @@
       links: [
         ['mdi-inbox-arrow-down', 'Home', '/'],
         ['mdi-send', 'Pools', '/pools'],
+        ['mdi-send', 'All chain', '/all'],
       ],
     }),
   }

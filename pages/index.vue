@@ -51,10 +51,20 @@ export default {
   name: 'IndexPage',
   data: () => ({
     allValidators: '',
+    totalTokenBonded: ''
   }),
   async mounted () {
     const allValidators = await axios(cosmosConfig[0].apiURL + `/staking/validators`)
     this.allValidators = allValidators.data.result
+
+    var totalTokenBonded = 0;
+    this.allValidators.forEach( async function(item){
+      totalTokenBonded += Number(item.tokens)
+      // Get all validator 1 by 1
+      // const unDelegation = await axios(cosmosConfig[0].apiURL + `/cosmos/staking/v1beta1/validators/` + item.operator_address + '/unbonding_delegations')
+      // console.log(unDelegation.data.unbonding_responses)
+    });
+    this.totalTokenBonded = totalTokenBonded / 1000000
   },
    methods: {
 

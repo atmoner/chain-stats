@@ -5,8 +5,8 @@ export default {
   target: "server",
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - tjeerd-script',
-    title: 'tjeerd-script',
+    titleTemplate: '%s - Chains stats',
+    title: 'V1',
     htmlAttrs: {
       lang: 'en'
     },
