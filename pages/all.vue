@@ -1,11 +1,27 @@
 <template>
   <div>
+          <!--<v-expansion-panels>
+            <v-expansion-panel
+              v-for="item in configData"
+              :key="item.name"
+            >
+              <v-expansion-panel-header>
+                Item
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>-->
     <v-simple-table>
       <template v-slot:default>
         <thead>
           <tr>
             <th class="text-left">
               Name
+            </th>
+            <th class="text-left">
+              Mode
             </th>
             <th class="text-left">
               Token
@@ -37,9 +53,11 @@
           </tr>
         </thead>
         <tbody>
+
           <tr
             v-for="item in configData"
             :key="item.name"
+
           >
             <td>
               <v-avatar size="36">
@@ -48,8 +66,9 @@
                   :alt="item.chainName"
                 >
               </v-avatar>
-              {{ item.chainName }}
+              <NuxtLink :to="'detail-chain/' + item.chainSlug">{{ item.chainName }}</NuxtLink>
             </td>
+            <td><span :class="item.chainMode === 'testnet' ? 'orange--text' : 'green--text'">{{ item.chainMode }}</span></td>
             <td>{{ item.chainToken }}</td>
             <td>${{ item.price }}</td>
             <td>{{ formatNum(item.supply.amount.amount / 1000000) }} {{ item.chainToken }}</td>
@@ -77,13 +96,14 @@ export default {
       watchers: ['options.series'],
       series: [],
       config: cosmosConfig,
-      configData: ''
+      configData: '',
+      coinGeekoData: []
     }
   },
   computed: {
 
   },
-  mounted() {
+  async mounted() {
     /* var copieChain = [];
 
     cosmosConfig.forEach(function(item){
@@ -92,24 +112,40 @@ export default {
 
     this.configData = copieChain
     // console.log(this.configData) */
-    this.fetchData('test')
+    await this.fetchCoinGeeko()
+    this.fetchData()
 
   },
   methods: {
     formatNum(nombre){
       return new Intl.NumberFormat('en-US').format(nombre)
     },
+    async fetchCoinGeeko(){
+      var coingeckoFinal = ''
+      cosmosConfig.forEach(function(item) {
+        coingeckoFinal += item.coingeckoId + ','
+      })
+      // Make a request for a user with a given ID
+      var coinGeekoData = this.coinGeekoData
+      var coinGeekoData = await axios.get('https://api.coingecko.com/api/v3/simple/price?ids=' + coingeckoFinal + '&vs_currencies=usd')
+      this.coinGeekoData = coinGeekoData.data
+
+      return true
+    },
     async fetchData(data) {
 
-      var copieChain = [];
+      var copieChain = []
+      var coinGeekoData = this.coinGeekoData
 
       cosmosConfig.forEach(function(item){
         // copieChain.push(item);
         // console.log(item.apiURL)
+
+
+
         var getAllData = Promise.all([
           fetch(item.apiURL + `/staking/validators`).then(resp => resp.json()),
           fetch(item.apiURL + `/cosmos/bank/v1beta1/supply/` + item.coinLookup.chainDenom).then(resp => resp.json()),
-          fetch('https://api.coingecko.com/api/v3/simple/price?ids=' + item.coingeckoId + '&vs_currencies=usd').then(resp => resp.json()),
           fetch(item.apiURL + '/cosmos/mint/v1beta1/inflation').then(resp => resp.json()),
 
         ])
@@ -126,27 +162,28 @@ export default {
           });
           if (item.name === 'BitCanna') {
             value[0].result.forEach( async function(itemVal){
-              console.log(itemVal.description.moniker, (itemVal.tokens / totalTokenBonded) * 100)
+              // console.log(itemVal.description.moniker, (itemVal.tokens / totalTokenBonded) * 100)
             });
           }
 
-
           var price = ''
-          if (typeof value[2][item.coingeckoId].usd === 'undefined') {
+          if (typeof coinGeekoData[item.coingeckoId].usd === 'undefined') {
             price = 0 + ' (Unavailable)'
           } else
-            price = value[2][item.coingeckoId].usd
+            price = coinGeekoData[item.coingeckoId].usd
 
 
           var finalDataValue = {
             chainName: item.name,
+            chainSlug: item.slug,
+            chainMode: item.mode,
             chainToken: item.coinLookup.viewDenom,
             icon: item.coinLookup.icon,
             validators: value[0],
             totalTokenBonded: totalTokenBonded / 1000000,
             supply: value[1],
             price: price,
-            inflation: Number(value[3].inflation * 100).toFixed(2),
+            inflation: Number(value[2].inflation * 100).toFixed(2),
             valNumber: value[0].result.length,
           }
 
