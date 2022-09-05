@@ -1,16 +1,47 @@
 <template>
   <v-app id="inspire">
-    <v-system-bar app>
-      <v-spacer></v-spacer>
+    <v-app-bar
+      app
+      color="white"
+      flat
+    >
+      <v-container class="py-0 fill-height">
+        <v-avatar
+          class="mr-10"
+          color="grey darken-1"
+          size="32"
+        >
+          <img
+            src="https://raw.githubusercontent.com/cosmos/chain-registry/master/cosmoshub/images/atom.svg"
+            alt="cosmoshub"
+          >
+        </v-avatar>
 
-      <v-icon>mdi-square</v-icon>
+        <v-btn
+          v-for="[icon, text, url] in links"
+          :key="text"
+          :to="url"
+          text
+        >
+          {{ text }}
+        </v-btn>
 
-      <v-icon>mdi-circle</v-icon>
+        <v-spacer></v-spacer>
 
-      <v-icon>mdi-triangle</v-icon>
-    </v-system-bar>
+        <v-responsive max-width="260">
+          <v-text-field
+            dense
+            flat
+            hide-details
+            rounded
+            solo-inverted
+          ></v-text-field>
+        </v-responsive>
+      </v-container>
+    </v-app-bar>
 
-    <v-navigation-drawer
+
+    <!--<v-navigation-drawer
       v-model="drawer"
       app
     >
@@ -45,7 +76,7 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
-    </v-navigation-drawer>
+    </v-navigation-drawer>-->
 
     <v-main>
       <v-container
@@ -69,12 +100,11 @@
 <script>
   export default {
     data: () => ({
-      cards: ['Today'],
+      cards: ['Main'],
       drawer: null,
       links: [
-        ['mdi-inbox-arrow-down', 'Home', '/'],
-        ['mdi-send', 'Pools', '/pools'],
-        ['mdi-send', 'All chain', '/all'],
+        ['mdi-inbox-arrow-down', 'Dashboard', '/']/*,
+        ['mdi-send', 'Pools', '/pools']*/
       ],
     }),
   }

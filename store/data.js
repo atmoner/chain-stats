@@ -6,7 +6,10 @@ export const state = () => ({
   balances: [],
   chainValidator: '',
   finalChainValidator: '',
-  totalTokenBonded: ''
+  totalTokenBonded: '',
+  inflation: '',
+  allSupply: '',
+  assets: ''
 })
 
 export const mutations = {
@@ -55,6 +58,28 @@ export const actions = {
     commit('setChainValidator', result.reverse())
     commit('setTotalTokenBonded', totalTokenBonded)
   },
+
+  async getInflation({ commit, state }, chain) {
+    try {
+    const getInflation = await axios(chain.apiURL + '/cosmos/mint/v1beta1/inflation')
+    commit('setInflation', getInflation.data.inflation)
+    } catch (error) {
+      commit('setInflation', 0)
+    }
+  },
+  async getAssets({ commit, state }, chain) {
+    try {
+      const getassets = await axios(chain.apiURL + '/cosmos/bank/v1beta1/supply')
+      commit('setAssets', getassets.data.supply)
+    } catch (error) {
+      commit('setAssets', '')
+    }
+  },
+  async getAllSupply({ commit, state }, chain) {
+    const allsupply = await axios(chain.apiURL + `/cosmos/bank/v1beta1/supply/` + chain.coinLookup.chainDenom)
+    commit('setAllSupply', allsupply.data.amount.amount)
+  },
+
   async getFinalValidatorData({ commit, state }, data) {
     commit('setFinalChainValidator', data)
   },

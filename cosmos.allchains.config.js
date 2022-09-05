@@ -127,5 +127,115 @@ export default [
     },
     coingeckoId: 'starname'
   },
+
+  {
+    chainId: 'chihuahua-1',
+    name: 'Chihuahua',
+    slug: 'chihuahua',
+    mode: 'mainnet',
+    desc: 'Chihuahua is the first interoperable meme coin with a POS blockchain, making it one of the most utilized chains in the Cosmos ecosystem',
+    apiURL: 'https://api.chihuahua.wtf',
+    rpcURL: 'https://rpc.chihuahua.wtf',
+    coinLookup: {
+      viewDenom: 'HUAHUA',
+      chainDenom: 'uhuahua',
+      addressPrefix: 'chihuahua',
+      icon: `https://avatars.githubusercontent.com/u/94940349?v=4`,
+    },
+    coingeckoId: 'chihuahua-token'
+  },
+  {
+    chainId: 'akashnet-2',
+    name: 'Akash',
+    slug: 'akash',
+    mode: 'mainnet',
+    desc: '',
+    apiURL: 'https://api-akash-ia.cosmosia.notional.ventures',
+    rpcURL: 'https://rpc-akash-ia.cosmosia.notional.ventures:443',
+    coinLookup: {
+      viewDenom: 'AKT',
+      chainDenom: 'uakt',
+      addressPrefix: 'akash',
+      icon: `https://raw.githubusercontent.com/cosmos/chain-registry/master/akash/images/akt.png`,
+    },
+    coingeckoId: 'akash-network'
+  },
+  {
+    chainId: 'bitsong-2b',
+    name: 'BitSong',
+    slug: 'bitsong',
+    mode: 'mainnet',
+    desc: 'A Blockchain Ecosystem to Empower the Music Industry. Artists, fans, distributors and labels.',
+    apiURL: 'https://lcd-bitsong.itastakers.com',
+    rpcURL: 'https://rpc-bitsong.itastakers.com',
+    coinLookup: {
+      viewDenom: 'BTSG',
+      chainDenom: 'ubtsg',
+      addressPrefix: 'bitsong',
+      icon: `https://raw.githubusercontent.com/osmosis-labs/assetlists/main/images/btsg.svg`,
+    },
+    coingeckoId: 'bitsong'
+  },
+  {
+    chainId: 'sentinelhub-2',
+    name: 'Sentinel',
+    slug: 'sentinel',
+    mode: 'mainnet',
+    desc: 'The Blockchain Bandwidth Infrastructure · Sentinel is a network of independent dVPN applications.',
+    apiURL: 'https://lcd-sentinel.keplr.app',
+    rpcURL: 'https://rpc-sentinel.keplr.app',
+    coinLookup: {
+      viewDenom: 'DVPN',
+      chainDenom: 'udvpn',
+      addressPrefix: 'sent',
+      icon: `https://raw.githubusercontent.com/osmosis-labs/assetlists/main/images/dvpn.png`,
+    },
+    coingeckoId: 'sentinel'
+  },
+  {
+    chainId: 'dig-1',
+    name: 'Dig Chain',
+    slug: 'dig',
+    mode: 'mainnet',
+    apiURL: 'https://api-1-dig.notional.ventures',
+    rpcURL: 'https://rpc-1-dig.notional.ventures',
+    coinLookup: {
+      viewDenom: 'DIG',
+      chainDenom: 'udig',
+      addressPrefix: 'dig',
+      icon: `https://raw.githubusercontent.com/osmosis-labs/assetlists/main/images/dig.png`,
+    },
+    coingeckoId: 'dig-chain'
+  },
+  {
+    chainId: 'kichain-2',
+    name: 'Kichain',
+    slug: 'kichain',
+    mode: 'mainnet',
+    apiURL: 'https://api-mainnet.blockchain.ki',
+    rpcURL: 'https://rpc-mainnet.blockchain.ki',
+    coinLookup: {
+      viewDenom: 'XKI',
+      chainDenom: 'uxki',
+      addressPrefix: 'ki',
+      icon: `https://raw.githubusercontent.com/osmosis-labs/assetlists/main/images/xki.svg`,
+    },
+    coingeckoId: 'ki'
+  },
+  {
+    chainId: 'comdex-1',
+    name: 'Comdex',
+    slug: 'comdex',
+    mode: 'mainnet',
+    apiURL: 'https://rest.comdex.one',
+    rpcURL: 'https://rpc.comdex.one',
+    coinLookup: {
+      viewDenom: 'CMDX',
+      chainDenom: 'ucmdx',
+      addressPrefix: 'comdex',
+      icon: `https://raw.githubusercontent.com/cosmos/chain-registry/master/comdex/images/cmdx.png`,
+    },
+    coingeckoId: 'comdex'
+  },
 ]
 

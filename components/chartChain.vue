@@ -9,13 +9,42 @@
           <v-card
             height="500"
           >
-            <v-card-title>Statistic</v-card-title>
+            <v-card-title>All assets</v-card-title>
             <v-card-text>
-              <highchart
-                :options="chartOptionsDonuts"
-                :modules="['exporting']"
-                style="width:100%;"
-              />
+           <!-- {{ assets }}-->
+            <v-simple-table fixed-header height="400px">
+              <template v-slot:default>
+                <thead>
+                  <tr>
+                    <th class="text-left">
+                      Asset
+                    </th>
+                    <th class="text-left">
+                      Amount
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr
+                    v-for="item in finalDenomIbc"
+                    :key="item.denom"
+                  >
+                    <td>
+                    <!--<v-avatar>
+                      <img
+                        :src="item.logo"
+                        alt="John"
+                      >
+                    </v-avatar>-->
+
+                    {{ item.name }}
+                    </td>
+                    <td>{{ item.value }}</td>
+                  </tr>
+                </tbody>
+              </template>
+            </v-simple-table>
             </v-card-text>
           </v-card>
         </v-col>
@@ -84,7 +113,7 @@
           >
             <v-card-text>
             <highchart
-              :options="chartPrice"
+              :options="chartCumulative"
               :modules="['exporting']"
               :update="watchers"
 
@@ -97,12 +126,11 @@
           >
 
             <v-card-text>
-            <highchart
-              :options="chartVolume"
-              :modules="['exporting']"
-              :update="watchers"
-
-            />
+              <highchart
+                :options="chartOptionsDonuts"
+                :modules="['exporting']"
+                style="width:100%;"
+              />
             </v-card-text>
           </v-card>
         </v-col>
@@ -110,9 +138,21 @@
       <v-row>
         <v-col
           cols="12"
-          md="4"
+          md="6"
         >
           <v-card
+            height="350"
+          >
+            <v-card-text>
+            <highchart
+              :options="chartPrice"
+              :modules="['exporting']"
+              :update="watchers"
+
+            />
+            </v-card-text>
+          </v-card>
+          <!--<v-card
             height="238"
           >
 
@@ -124,7 +164,25 @@
 
             />
             </v-card-text>
+          </v-card>-->
+        </v-col>
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-card
+            height="350"
+          >
+            <v-card-text>
+            <highchart
+              :options="chartVolume"
+              :modules="['exporting']"
+              :update="watchers"
+
+            />
+            </v-card-text>
           </v-card>
+
         </v-col>
       </v-row>
 
@@ -138,8 +196,7 @@ import cosmosConfig from '~/cosmos.config'
 import cosmosConfigAllchains from '~/cosmos.allchains.config'
 
 export default {
-  props: ['allValidatorsProp'],
-  data(props) {
+  data() {
     return {
       symbol: 'BCNA',
       series: [],
@@ -153,6 +210,8 @@ export default {
       seriesPrice: [],
       seriesVolume: [],
       seriesCumulative: [],
+      seriesCumulativeIdeal: [],
+      finalDenomIbc: [],
       watchers: [
         'options.title',
         'options.series'
@@ -160,20 +219,19 @@ export default {
     }
   },
   computed: {
-    ...mapState('data', ['chainId', 'chainValidator', 'finalChainValidator', 'totalTokenBonded']),
+    ...mapState('data', ['chainId', 'chainValidator', 'finalChainValidator', 'totalTokenBonded', 'assets']),
     chartOptionsDonuts() {
       return {
 
         chart: {
             plotBackgroundColor: null,
             plotBorderWidth: 0,
-            plotShadow: false
+            plotShadow: false,
+            height: (0.40 * 100) + '%' // 16:9 ratio
         },
         title: {
-            text: this.chainDenom + ' <br />Supply',
-            align: 'center',
-            verticalAlign: 'middle',
-            y: 60
+            text: this.chainDenom + ' Supply',
+
         },
         tooltip: {
             pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -183,22 +241,7 @@ export default {
                 valueSuffix: '%'
             }
         },
-        plotOptions: {
-            pie: {
-                dataLabels: {
-                    enabled: true,
-                    distance: -50,
-                    style: {
-                        fontWeight: 'bold',
-                        color: 'white'
-                    }
-                },
-                startAngle: -90,
-                endAngle: 90,
-                center: ['50%', '75%'],
-                size: '110%'
-            }
-        },
+
         series: [{
             type: 'pie',
             name: 'Browser share',
@@ -207,11 +250,12 @@ export default {
         }]
       }
     },
+
     chartPrice () {
       const ctx = this
       return {
         chart: {
-            height: (0.45 * 100) + '%' // 16:9 ratio
+            height: (0.4 * 100) + '%' // 16:9 ratio
         },
 
         title: {
@@ -263,7 +307,7 @@ export default {
       const ctx = this
       return {
         chart: {
-            height: (0.45 * 100) + '%' // 16:9 ratio
+            height: (0.4 * 100) + '%' // 16:9 ratio
         },
 
         title: {
@@ -315,7 +359,7 @@ export default {
       const ctx = this
       return {
         chart: {
-            height: (0.45 * 100) + '%' // 16:9 ratio
+            height: (0.40 * 100) + '%' // 16:9 ratio
         },
 
         title: {
@@ -329,7 +373,8 @@ export default {
         yAxis: {
             title: {
                 text: 'Cumulative %'
-            }
+            },
+            max: 100
         },
 
         legend: {
@@ -348,33 +393,16 @@ export default {
         },
 
         series: [{
-            name: 'Percent',
+            name: 'Now',
             data: this.seriesCumulative,
-        }/*, {
-            name: 'Volume',
-            data: this.seriesVolume
-        }*/],
+        }, {
+            name: 'Ideal',
+            data: this.seriesCumulativeIdeal
+        }],
       }
     }
   },
-  /* async fetch() {
-    // this.fetchData('AAPL')
-    // const chartData = await axios('https://api-osmosis.imperator.co/tokens/v2/historical/bcna/chart?tf=5')
-    const chartData = await axios('https://api.coingecko.com/api/v3/coins/bitcanna/ohlc?vs_currency=usd&days=365')
-    await this.series.push({
-      name: 'BCNA',
-      data: chartData.data.map((entry) => {
-        return [
-          entry[0],
-          entry[1],
-          entry[2],
-          entry[3],
-          entry[4],
-        ]
-      })
-    })
-    this.onloaded = true
-  }, */
+
 
   async mounted() {
     // this.fetchData('AAPL')
@@ -383,19 +411,23 @@ export default {
     this.chainDenom = foundChain.coinLookup.viewDenom
 
     await this.$store.dispatch('data/getValidatorByChain', foundChain)
+    await this.$store.dispatch('data/getAssets', foundChain)
     this.allValidators = this.chainValidator
-    console.log(this.totalTokenBonded)
+    // console.log(this.totalTokenBonded)
 
     var totalTokenBondedPc = this.totalTokenBonded
     var seriesCumulative = this.seriesCumulative
+    var seriesCumulativeIdeal = this.seriesCumulativeIdeal
     var cumulativeShare = 0
+    var totalVal = (1 / this.allValidators.length) *100
+    var finalIdeal = 0
     this.allValidators.forEach( async function(item, index){
       item.votingPowerPc = (((item.tokens / 1000000) * 100) / totalTokenBondedPc).toFixed(2)
       cumulativeShare += (item.tokens / 1000000)
       item.votingPowerCumulative = ((cumulativeShare + item.tokens) * 100 / totalTokenBondedPc).toFixed(2)
-      console.log([ item.operator_address, item.votingPowerCumulative ])
-
       seriesCumulative.push([ ' [' + (index + 1) + '] ' +item.description.moniker, Number(item.votingPowerCumulative) ])
+      finalIdeal += totalVal
+      seriesCumulativeIdeal.push([ ' [' + (index + 1) + '] ' +item.description.moniker, Number(finalIdeal) ])
     });
 
 
@@ -425,6 +457,28 @@ export default {
       seriesVolume.push([ item[0], item[1] ])
     })
 
+    try {
+    const getInflation = await axios(foundChain.apiURL + '/cosmos/mint/v1beta1/inflation')
+    this.inflation = (getInflation.data.inflation * 100).toFixed(2)
+    } catch (error) {
+      console.error(error);
+      // expected output: ReferenceError: nonExistentFunction is not defined
+      // Note - error messages will vary depending on browser
+    }
+    console.log(this.assets)
+    var finalDenomIbc = this.finalDenomIbc
+    if (this.assets !== '') {
+      this.assets.forEach(async function (item) {
+        var traceId = item.denom.split(`/`)[1]
+        const getDetailIbc = await axios(foundChain.apiURL + '/ibc/apps/transfer/v1/denom_traces/' + traceId )
+        if(getDetailIbc.data.denom_trace.base_denom.length < 8) {
+          finalDenomIbc.push({ name: getDetailIbc.data.denom_trace.base_denom, value: item.amount })
+        } else {
+          finalDenomIbc.push({ name: 'Not found', value: item.amount })
+        }
+      })
+    }
+
 
   },
   methods: {
@@ -432,21 +486,7 @@ export default {
     formatNum(nombre){
       return new Intl.NumberFormat().format(nombre)
     },
-    /*async fetchData(symbol) {
-    const chartData = await axios('https://api.coingecko.com/api/v3/coins/bitcanna/ohlc?vs_currency=usd&days=365')
-    await this.series.push({
-      name: 'BCNA',
-      data: chartData.data.map((entry) => {
-        return [
-          entry[0],
-          entry[1],
-          entry[2],
-          entry[3],
-          entry[4],
-        ]
-      })
-    })
-    }*/
+
   }
 }
 </script>
