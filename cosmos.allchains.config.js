@@ -237,5 +237,21 @@ export default [
     },
     coingeckoId: 'comdex'
   },
+  {
+    chainId: 'kaiyo-1',
+    name: 'Kujira',
+    slug: 'kujira',
+    mode: 'mainnet',
+    desc: 'The Cosmos Layer 1 platform for community selected projects creating true value.',
+    apiURL: 'https://lcd-kujira.whispernode.com',
+    rpcURL: 'https://rpc-kujira.whispernode.com',
+    coinLookup: {
+      viewDenom: 'KUJI',
+      chainDenom: 'ukuji',
+      addressPrefix: 'kujira',
+      icon: 'https://raw.githubusercontent.com/cosmos/chain-registry/master/kujira/images/kuji.png',
+    },
+    coingeckoId: 'kujira'
+  },  
 ]
 
